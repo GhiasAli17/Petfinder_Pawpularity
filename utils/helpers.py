@@ -54,10 +54,23 @@ def showPicture(num_of_pictures, train_jpg, train_df):
         # to retreive the record of only that id from pandas dataset
         score = train_df.loc[train_df["Id"] == img_id,"Pawpularity"].iloc[0]
         ax[i].imshow(img)
-        ax[i].set_title(f"Image {i+1}\n {img.shape} \n Pawpularity: {score}")
+        ax[i].set_title(f"{img.shape} \n Pawpularity: {score}")
         ax[i].axis('off')
 
     plt.show()
 
  #4. Showing highest and lowest score pictures
+def showPicture(num_of_pictures, train_jpg, train_df):
+    fig, ax = plt.subplots(1, num_of_pictures, figsize=(10, 5))
+    for i in range(num_of_pictures):
+        img_path = train_jpg[i]
+        img = plt.imread(img_path)
+        #to get the img id
+        img_id = Path(train_jpg[i]).stem
+        # to retreive the record of only that id from pandas dataset
+        score = train_df.loc[train_df["Id"] == img_id,"Pawpularity"].iloc[0]
+        ax[i].imshow(img)
+        ax[i].set_title(f"{img.shape} \n Pawpularity: {score}")
+        ax[i].axis('off')
 
+    plt.show()
