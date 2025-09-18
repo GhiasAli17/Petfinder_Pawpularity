@@ -74,3 +74,15 @@ def showPicture(num_of_pictures, train_jpg, train_df):
         ax[i].axis('off')
 
     plt.show()
+
+#5. Plot correlation matrix
+def plotCorrelationMatrix(train_df):
+    # Slice the DataFrame to exclude 'Id' from correlation calculation
+    correlation_data = train_df.loc[:, train_df.columns != 'Id']
+    co_matrix = correlation_data.corr()
+    # Plot the correlation matrix
+    plt.figure(figsize=(8, 8))
+    sns.heatmap(co_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+    plt.title("Correlation Matrix")
+    plt.show()
+    print(co_matrix["Pawpularity"][:-1])
