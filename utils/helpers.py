@@ -9,7 +9,7 @@ from pathlib import Path
 import torch
 
 
-def seed_everything(seed: int = 42):
+def set_seeds(seed: int = 42):
     random.seed(seed)
     np.random.seed(seed)
     random.seed(seed)
