@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import torch
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+import cv2
+
 
 
 def set_seeds(seed: int = 42):
@@ -78,13 +80,13 @@ def showPicture(num_of_pictures, train_jpg, train_df):
     plt.show()
 
 #5. Plot correlation matrix
-def plotCorrelationMatrix(train_df):
+def plotCorrelationMatrix(train_df,figsize=(8,8)):
     # Slice the DataFrame to exclude 'Id' from correlation calculation
     correlation_data = train_df.loc[:, train_df.columns != 'Id']
     co_matrix = correlation_data.corr()
     mask = np.triu(np.ones_like(co_matrix, dtype=bool))
     # Plot the correlation matrix
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=figsize)
     sns.heatmap(co_matrix, annot=True,mask=mask, cmap='coolwarm', fmt=".2f")
     plt.title("Correlation Matrix")
     plt.show()
@@ -102,3 +104,42 @@ def calculateVIF(train_df):
                             for i in range(len(train_df.columns))]  
     vif_data = vif_data.sort_values("VIF", ascending=False)
     return vif_data
+
+#7. Extracting features from image
+
+def extractFeature(train_df):
+    features_list = []
+
+    for idx, row in train_df.iterrows():
+        path = row['path']
+        img = cv2.imread(path)
+        if img is None:
+            continue
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Feature calculations
+        brightness = np.mean(gray)
+        contrast = np.std(gray)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        saturation = np.mean(hsv[:, :, 1])
+        sharpness = cv2.Laplacian(gray, cv2.CV_64F).var()
+        edges = cv2.Canny(gray, 100, 200)
+        edge_density = np.mean(edges > 0)
+        height, width = img.shape[:2]
+        aspect_ratio = width / height
+
+        features_list.append({
+            "Id": row['Id'],  # we will use this for merging
+            "brightness": brightness,
+            "contrast": contrast,
+            "saturation": saturation,
+            "sharpness": sharpness,
+            "edge_density": edge_density,
+            "width": width,
+            "height": height,
+            "aspect_ratio": aspect_ratio
+        })
+
+    return features_list
+
