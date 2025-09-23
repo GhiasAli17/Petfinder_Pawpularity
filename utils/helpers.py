@@ -2,11 +2,13 @@
 import random
 import numpy as np
 import os
+import pandas as pd
 from glob import glob
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pathlib import Path
 import torch
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
 def set_seeds(seed: int = 42):
@@ -80,9 +82,23 @@ def plotCorrelationMatrix(train_df):
     # Slice the DataFrame to exclude 'Id' from correlation calculation
     correlation_data = train_df.loc[:, train_df.columns != 'Id']
     co_matrix = correlation_data.corr()
+    mask = np.triu(np.ones_like(co_matrix, dtype=bool))
     # Plot the correlation matrix
     plt.figure(figsize=(8, 8))
-    sns.heatmap(co_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+    sns.heatmap(co_matrix, annot=True,mask=mask, cmap='coolwarm', fmt=".2f")
     plt.title("Correlation Matrix")
     plt.show()
     print(co_matrix["Pawpularity"][:-1])
+
+
+#6. Plot VIF
+def calculateVIF(train_df):
+    # VIF dataframe
+    vif_data = pd.DataFrame()
+    vif_data["feature"] = train_df.columns
+    
+    # calculating VIF for each feature
+    vif_data["VIF"] = [variance_inflation_factor(train_df.values, i)
+                            for i in range(len(train_df.columns))]  
+    vif_data = vif_data.sort_values("VIF", ascending=False)
+    return vif_data
