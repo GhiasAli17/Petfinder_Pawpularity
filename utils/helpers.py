@@ -1,15 +1,29 @@
 
+
+import os
 import random
 import numpy as np
-import os
 import pandas as pd
-from glob import glob
-import seaborn as sns
-import matplotlib.pyplot as plt
-from pathlib import Path
-import torch
-from statsmodels.stats.outliers_influence import variance_inflation_factor
 import cv2
+import torch
+
+from glob import glob
+from pathlib import Path
+from collections import defaultdict
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn import model_selection
+from sklearn.metrics import root_mean_squared_error as sklearn_rmse
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+from torch.optim.lr_scheduler import (
+    CosineAnnealingWarmRestarts,
+    OneCycleLR,
+    CosineAnnealingLR
+)
+
 
 
 
@@ -22,6 +36,80 @@ def set_seeds(seed: int = 42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.use_deterministic_algorithms = True
+
+
+class MetricMonitor:
+    """Tracks and computes the average of various metrics."""
+    def __init__(self, float_precision=3):
+        self.float_precision = float_precision
+        self.reset()
+
+    def reset(self):
+        self.metrics = defaultdict(lambda: {"val": 0, "count": 0, "avg": 0})
+
+    def update(self, metric_name, val):
+        metric = self.metrics[metric_name]
+        metric["val"] += val
+        metric["count"] += 1
+        metric["avg"] = metric["val"] / metric["count"]
+
+    def __str__(self):
+        return " | ".join(
+            [
+                "{metric_name}: {avg:.{float_precision}f}".format(
+                    metric_name=metric_name, avg=metric["avg"],
+                    float_precision=self.float_precision
+                )
+                for (metric_name, metric) in self.metrics.items()
+            ]
+        )
+
+def get_scheduler(optimizer, params):
+    """Returns the learning rate scheduler based on configuration.
+    Cosine Annealing adjusts the learning rate using a cosine function, which means the learning rate starts high, gradually decreases to a minimum
+    """
+    scheduler_params = params 
+    scheduler_name = scheduler_params.get('schedulername')
+    """ CosineAnnealingWarmRestarts is a variant that periodically restarts the learning rate back to the maximum, allowing the model to escape local minima.
+    CosineAnnealingLR gradually decreases the learning rate from a maximum to a minimum value during training"""
+    if scheduler_name == 'CosineAnnealingWarmRestarts':
+        scheduler = CosineAnnealingWarmRestarts(
+            optimizer,
+            T_0=scheduler_params.get('T0', 5), 
+            eta_min=scheduler_params.get('minlr', 1e-7),
+            last_epoch=-1
+        )
+    elif scheduler_name == 'CosineAnnealingLR':
+        scheduler = CosineAnnealingLR(
+            optimizer,
+            T_max=scheduler_params.get('Tmax', 5),
+            eta_min=scheduler_params.get('minlr', 1e-7),
+            last_epoch=-1
+        )
+    else:
+        scheduler = None
+        
+    return scheduler
+
+def show_image(train_dataset, inline=4):
+    """Displays a batch of random images from the dataset."""
+    plt.figure(figsize=(20,10))
+    for i in range(inline):
+        rand = random.randint(0, len(train_dataset) - 1)
+        image, _, label = train_dataset[rand]
+        plt.subplot(1, inline, i % inline + 1)
+        plt.axis('off')
+        plt.imshow(image.permute(2, 1, 0)) 
+        plt.title(f'Pawpularity: {label.item() * 100:.1f}')
+    plt.show()
+
+def usr_rmse_score(output, target):
+    """Calculates the scaled RMSE score (for Pawpularity which is 0-100)."""
+    with torch.no_grad():
+        y_pred = torch.sigmoid(output) * 100
+        target_scaled = target * 100 
+        rmse = torch.sqrt(torch.mean((y_pred - target_scaled) ** 2))
+    return rmse.item()
 
 
 # ----********----  Figure, Images plot related function -----********-------

@@ -5,6 +5,10 @@ src/__pycache__/
 *.pyo
 *.pyd
 
+# Model checkpoints
+*.pth
+*.pkl
+
 # Virtual environments
 venv/
 pytorchenv/
