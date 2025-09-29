@@ -5,7 +5,7 @@ This project analyzes the **Petfinder Pawpularity Contest**. The dataset consist
 
 It demonstrates a **vision transformer based models**, including:  
 - **Vision Transformer (Images+metadata)** model  
-- **Swin transformer** model    
+- **Swin transformer (Image only)** model    
 - Modularized structure for datasets, models, training, and evaluation     
 
 # Usage
