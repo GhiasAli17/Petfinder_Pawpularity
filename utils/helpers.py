@@ -64,32 +64,6 @@ class MetricMonitor:
             ]
         )
 
-def get_scheduler(optimizer, params):
-    """Returns the learning rate scheduler based on configuration.
-    Cosine Annealing adjusts the learning rate using a cosine function, which means the learning rate starts high, gradually decreases to a minimum
-    """
-    scheduler_params = params 
-    scheduler_name = scheduler_params.get('schedulername')
-    """ CosineAnnealingWarmRestarts is a variant that periodically restarts the learning rate back to the maximum, allowing the model to escape local minima.
-    CosineAnnealingLR gradually decreases the learning rate from a maximum to a minimum value during training"""
-    if scheduler_name == 'CosineAnnealingWarmRestarts':
-        scheduler = CosineAnnealingWarmRestarts(
-            optimizer,
-            T_0=scheduler_params.get('T0', 5), 
-            eta_min=scheduler_params.get('minlr', 1e-7),
-            last_epoch=-1
-        )
-    elif scheduler_name == 'CosineAnnealingLR':
-        scheduler = CosineAnnealingLR(
-            optimizer,
-            T_max=scheduler_params.get('Tmax', 5),
-            eta_min=scheduler_params.get('minlr', 1e-7),
-            last_epoch=-1
-        )
-    else:
-        scheduler = None
-        
-    return scheduler
 
 def show_image(train_dataset, inline=4):
     """Displays a batch of random images from the dataset."""
