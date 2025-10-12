@@ -4,7 +4,7 @@ import timm
 
 class PetNet(nn.Module):
     """
-    Custom model combining a vision backbone (like ViT or EfficientNet) 
+    Custom model combining a vision backbone (like ViT) 
     with a dense feature head.
     """
     def __init__(self, model_name, out_features, inp_channels, pretrained, num_dense, dropout):

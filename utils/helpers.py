@@ -18,11 +18,6 @@ from sklearn import model_selection
 from sklearn.metrics import root_mean_squared_error as sklearn_rmse
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-from torch.optim.lr_scheduler import (
-    CosineAnnealingWarmRestarts,
-    OneCycleLR,
-    CosineAnnealingLR
-)
 
 
 
@@ -86,7 +81,7 @@ def usr_rmse_score(output, target):
     return rmse.item()
 
 
-# ----********----  Figure, Images plot related function -----********-------
+# ----********----  Figure, Images plot related functions -----********-------
 
 #1. Plotting Pawpularity distribution
 

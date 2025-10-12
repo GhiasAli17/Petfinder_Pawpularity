@@ -6,7 +6,7 @@ from utils.helpers import MetricMonitor
 
 def train_fn(train_loader, model, criterion, optimizer, epoch, params, scheduler=None):
     """
-    Performs one epoch of training, handles mixup, and calculates RMSE.
+    Performs one epoch of training, and calculates RMSE.
     """
     metric_monitor = MetricMonitor()
     model.train()

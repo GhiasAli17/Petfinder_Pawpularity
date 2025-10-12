@@ -20,8 +20,6 @@ def get_params(features):
     """Returns the model and training parameters."""
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-   
-    
     return {
         'model': 'vit_large_patch32_384',
         'densefeatures': features,
@@ -47,17 +45,9 @@ def get_params(features):
         'max_lr': 1e-4
     }
 
-def createfolds(data: pd.DataFrame, num_splits: int, seed: int) -> pd.DataFrame:
+def createfolds(data, num_splits, seed):
     """
     Splits the dataframe into stratified folds based on 'Pawpularity'.
-
-    Args:
-        data (pd.DataFrame): The input dataframe.
-        num_splits (int): Number of folds for splitting.
-        seed (int): Random seed for reproducibility.
-
-    Returns:
-        pd.DataFrame: The dataframe with a new 'kfold' column.
     """
     data["kfold"] = -1
     num_bins = int(np.floor(1 + np.log2(len(data))))
@@ -73,15 +63,9 @@ def createfolds(data: pd.DataFrame, num_splits: int, seed: int) -> pd.DataFrame:
 import albumentations
 from albumentations.pytorch import ToTensorV2
 
-def get_train_transforms(dim: int) -> albumentations.Compose:
+def get_train_transforms(dim):
     """
     Returns the training data augmentation and normalization pipeline.
-
-    Args:
-        dim (int): The target image dimension.
-
-    Returns:
-        albumentations.Compose: The Albumentations transformation pipeline.
     """
     return albumentations.Compose(
         [
@@ -117,15 +101,10 @@ def get_train_transforms(dim: int) -> albumentations.Compose:
         ]
     )
 
-def get_valid_transforms(dim: int) -> albumentations.Compose:
+def get_valid_transforms(dim):
     """
     Returns the validation data normalization pipeline.
 
-    Args:
-        dim (int): The target image dimension.
-
-    Returns:
-        albumentations.Compose: The Albumentations transformation pipeline.
     """
     return albumentations.Compose(
         [

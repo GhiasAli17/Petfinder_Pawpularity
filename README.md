@@ -6,7 +6,7 @@ This project analyzes the **Petfinder Pawpularity Contest**. The dataset consist
 It demonstrates a **vision transformer based models**, including:  
 - **Vision Transformer (Images+metadata)** model  
 - **Swin transformer (Image only)** model    
-- Modularized structure for datasets, models, training, and evaluation     
+- **Swin tranformer with Images+metadata - Extended PETS-SWINF**    
 
 # Usage
 main.ipynb is the main and entry file, where other modules are imported, the flow and visualization can be viewed in the main.ipynb file
