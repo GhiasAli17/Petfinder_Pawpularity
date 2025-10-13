@@ -13,12 +13,12 @@ main.ipynb is the main and entry file, the other existing approaches are defined
    
 ## 📂 Project Structure 
 ├── src/  
-│ ├── data.py # data loading  
-│ ├── train.py # models training  
-│ ├── models.py # model's architecture definitions,  
-│ ├── eval.py # testing models  
+│ ├── data.py 
+│ ├── train.py  
+│ ├── models.py 
+│ ├── eval.py  
 ├── utils/ # Helper functions  
 │ ├── helpers.py #helper functions for graph, metrics plotting  
 ├── main.ipynb # Main Entry point of Extended SWIN Tranformer  
-├── existing_approaches.ipynb # Existing models Exploration
+├── existing_approaches.ipynb # Existing models Exploration    
 ├── PDF Report 
