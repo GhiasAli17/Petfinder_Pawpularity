@@ -9,7 +9,7 @@ It demonstrates a **vision transformer based models**, including:
 - **Swin tranformer with Images+metadata - Extended PETS-SWINF**    
 
 # Usage
-main.ipynb is the main and entry file, where other modules are imported, the flow and visualization can be viewed in the main.ipynb file
+main.ipynb is the main and entry file, the other existing approaches are defined in the "existing_approaches.ipynb" file
    
 ## 📂 Project Structure 
 ├── src/  
@@ -19,5 +19,6 @@ main.ipynb is the main and entry file, where other modules are imported, the flo
 │ ├── eval.py # testing models  
 ├── utils/ # Helper functions  
 │ ├── helpers.py #helper functions for graph, metrics plotting  
-├── main.ipynb # Entry point   
+├── main.ipynb # Main Entry point of Extended SWIN Tranformer  
+├── existing_approaches.ipynb # Existing models Exploration
 ├── PDF Report 
